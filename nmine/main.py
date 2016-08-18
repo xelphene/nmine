@@ -158,6 +158,8 @@ def resolveNames(names, scope, nameserver=None):
 			pass
 		except dns.resolver.NoAnswer:
 			pass
+		except dns.exception.Timeout:
+			pass
 		else:
 			for rdata in answer:
 				log.debug('resolved %s to %s' % (name, rdata.address))
