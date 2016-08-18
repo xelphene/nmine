@@ -160,6 +160,9 @@ def resolveNames(names, scope, nameserver=None):
 			pass
 		except dns.exception.Timeout:
 			pass
+		except dns.name.EmptyLabel:
+			# raised if ".." is in a name. parser shouldn't even return that. TODO
+			pass
 		else:
 			for rdata in answer:
 				log.debug('resolved %s to %s' % (name, rdata.address))
