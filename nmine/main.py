@@ -156,6 +156,8 @@ def resolveNames(names, scope, nameserver=None):
 			pass
 		except dns.resolver.NXDOMAIN:
 			pass
+		except dns.resolver.NoAnswer:
+			pass
 		else:
 			for rdata in answer:
 				log.debug('resolved %s to %s' % (name, rdata.address))
