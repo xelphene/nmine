@@ -150,6 +150,7 @@ def resolveNames(names, scope, nameserver=None):
 		r.nameservers = [nameserver]
 
 	for name in names:
+		log.debug('looking up %s ...' % name)
 		try:
 			answer = r.query(name,'A')
 		except dns.resolver.NoNameservers:
@@ -251,8 +252,7 @@ def main():
 	
 	lookups = resolveNames(allNames, scope, nameserver=opts.nameserver)
 	
-	if opts.format=='zone':
-		writeOutputZone(lookups)
-	else:
+	if opts.format=='hosts':
 		writeOutputHosts(lookups)
-		
+	else:
+		writeOutputZone(lookups)
