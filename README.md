@@ -1,7 +1,51 @@
 # nmine
 
 nmine searches files for substrings that appear to be valid DNS names. It
-resolves them outputs the result if the address it resolves to is of interest.
+resolves them and outputs the result if the address it resolves to is of
+interest.
+
+# Examples / Description
+
+Let's say you have some arbitrary file (or directories of files) containing
+DNS names of some sort:
+
+```
+> ls
+blah.txt
+> cat blah.txt 
+nothing 
+The quick brown fox yahoo.com jumps over the lazy dog. hurricanelabs.com]
+Lorem ipsum dolor sit amet, ex wisi elitr eruditi pro.   129831; asdf
+google.com!zzzhomero has ei
+;sad0uf23 www.github.com 090
+```
+
+You're interested in any names which resolve to any address in 192.0.0.0/8.
+You put this in a file called "SCOPE" (or any file specified with the -i
+option):
+
+```
+>> cat > SCOPE
+192.0.0.0/8
+```
+
+You then run nmine while in the above directory, and any names resolving to
+your network(s) of interest are output:
+
+```
+> nmine
+hurricanelabs.com.                       600 IN A 192.230.81.48
+www.github.com.                          600 IN A 192.30.253.112
+```
+
+# Options
+
+* -i (filename): Name of a file containing IPv4 networks of interest.
+
+* -n (address): Name or address of a DNS server to send all queries to.
+
+* -f hosts|zone: Output format. "zone" is like BIND zone files or dig
+output.  "hosts" is like /etc/hosts.
 
 # Copyright and License
 
