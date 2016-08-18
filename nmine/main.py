@@ -27,7 +27,7 @@ def parseArgs(argv=sys.argv):
 	parser.remove_option('--version')
 	parser.add_option('-i', '--interesting', dest='scope', default=None, help= '''Path to file containing IPv4 addresses or prefixes which you consider "interesting" (the scope of the search).  This program will only output DNS names resolving to these addresses.  If not specified, a file named SCOPE in the current directory will be looked for and used if found.  Either a SCOPE file or this option is required.''')
 	parser.add_option('-n', '--nameserver', dest='nameserver', default=None, help= 'Nameserver to query. The normal DNS servers for this system will be used by default.')
-	parser.add_option('-f', '--format', dest='format', default='hosts', help='Output format. Must be either "hosts" (/etc/hosts style) or "zone" (BIND zone file / dig output style).')
+	parser.add_option('-f', '--format', dest='format', default='zone', help='Output format. Must be either "hosts" (/etc/hosts style) or "zone" (BIND zone file / dig output style).')
 	parser.add_option('-v', '--version', action='version', help='Display version number and exit')
 	parser.add_option('-d', '--debug', action='store_true', default=False, help='Turn on debug logging output')
 	
