@@ -154,6 +154,8 @@ def resolveNames(names, scope, nameserver=None):
 			answer = r.query(name,'A')
 		except dns.resolver.NoNameservers:
 			pass
+		except dns.resolver.NXDOMAIN:
+			pass
 		else:
 			for rdata in answer:
 				log.debug('resolved %s to %s' % (name, rdata.address))
