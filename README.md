@@ -51,14 +51,14 @@ output.  "hosts" is like /etc/hosts.
 
 Copyright (C) 2016 Hurricane Labs
 
-hdslfilter was written by Steve Benson for Hurricane Labs.
+nmine was written by Steve Benson for Hurricane Labs.
 
-hdslfilter is free software; you can redistribute it and/or modify it under
+nmine is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free
 Software Foundation; either version 3, or (at your option) any later
 version.
 
-hdslfilter is distributed in the hope that it will be useful, but WITHOUT ANY
+nmine is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
 details.
