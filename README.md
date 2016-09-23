@@ -47,6 +47,12 @@ www.github.com.                          600 IN A 192.30.253.112
 * -f hosts|zone: Output format. "zone" is like BIND zone files or dig
 output.  "hosts" is like /etc/hosts.
 
+* -t (TLD): Specify additional TLDs to consider valid. May be specified
+multiple times.
+
+* -T: Do NOT automatically consider IANA TLDs valid. The only TLDs
+considered valid will be those specified with -t.
+
 # Copyright and License
 
 Copyright (C) 2016 Hurricane Labs

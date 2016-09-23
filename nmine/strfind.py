@@ -9,12 +9,11 @@ class StringFinder:
 	re_dns = re.compile('([a-zA-Z0-9]{1}[-.a-zA-Z0-9]+)')
 	re_windowend = re.compile('.*?([-.a-zA-Z0-9]+)$')
 
-	def __init__(self, provider_tldList=None):
-		# should be a function which returns a list of TLDs
-		if provider_tldList!=None:
-			self.provider_tldList = provider_tldList
+	def __init__(self, tlds=None):
+		if tlds!=None:
+			self.tlds = tlds
 		else:
-			self.provider_tldList = lambda: IANA_TLD_LIST
+			self.tlds = set(IANA_TLD_LIST)
 		
 		self.log = logging.getLogger('hptk.parse.dns')
 
@@ -68,7 +67,8 @@ class StringFinder:
 			parts = name.split('.')
 			#ntld = name.split('.')[-1]
 			#print 'ntld',ntld
-			if len(parts)>1 and parts[-1] in self.provider_tldList():
+			#if len(parts)>1 and parts[-1] in self.provider_tldList():
+			if len(parts)>1 and parts[-1] in self.tlds:
 				#print ' YES'
 				namesConfirmed.add(name)
 			#for ending in self.endings():

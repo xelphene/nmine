@@ -7,11 +7,12 @@ import logging
 from strfind import StringFinder
 from output import writeOutputZone
 from output import writeOutputHosts
+from ianatlds import IANA_TLD_LIST
 
-def extractNamesFromPath(path):
+def extractNamesFromPath(path, tlds):
 	'''given a path to a file, extract all possible DNS names from it.'''
 	f = open(path)
-	sf=  StringFinder()
+	sf=  StringFinder(tlds=tlds)
 	names = set()
 	for line in f:
 		for name in sf.searchStringConfirmed(line):
@@ -25,12 +26,37 @@ def parseArgs(argv=sys.argv):
 		version="%prog v1.0"
 	)
 	parser.remove_option('--version')
-	parser.add_option('-i', '--interesting', dest='scope', default=None, help= '''Path to file containing IPv4 addresses or prefixes which you consider "interesting" (the scope of the search).  This program will only output DNS names resolving to these addresses.  If not specified, a file named SCOPE in the current directory will be looked for and used if found.  Either a SCOPE file or this option is required.''')
-	parser.add_option('-n', '--nameserver', dest='nameserver', default=None, help= 'Nameserver to query. The normal DNS servers for this system will be used by default.')
-	parser.add_option('-f', '--format', dest='format', default='zone', help='Output format. Must be either "hosts" (/etc/hosts style) or "zone" (BIND zone file / dig output style).')
-	parser.add_option('-v', '--version', action='version', help='Display version number and exit')
-	parser.add_option('-d', '--debug', action='store_true', default=False, help='Turn on debug logging output')
-	
+	parser.add_option('-i', '--interesting',
+		dest='scope',
+		default=None,
+		help= '''Path to file containing IPv4 addresses or prefixes which you consider "interesting" (the scope of the search).  This program will only output DNS names resolving to these addresses.  If not specified, a file named SCOPE in the current directory will be looked for and used if found.  Either a SCOPE file or this option is required.''')
+	parser.add_option('-n', '--nameserver',
+		dest='nameserver',
+		default=None,
+		help= 'Nameserver to query. The normal DNS servers for this system will be used by default.')
+	parser.add_option('-f', '--format',
+		dest='format',
+		default='zone',
+		help='Output format. Must be either "hosts" (/etc/hosts style) or "zone" (BIND zone file / dig output style).')
+	parser.add_option('-v', '--version',
+		action='version',
+		help='Display version number and exit')
+	parser.add_option('-d', '--debug',
+		action='store_true',
+		default=False,
+		help='Turn on debug logging output' )
+	parser.add_option('-t', '--addtld',
+		action='append',
+		dest='addTlds',
+		default=[],
+		type='str',
+		help='Specify additional TLDs to consider valid. May be specified multiple times')
+	parser.add_option('-T', '--noianatlds',
+		action='store_false',
+		dest='useIanaTlds',
+		default=True,
+		help='Do NOT automatically consider IANA TLDs valid. The only TLDs considered valid will be those specified with -t.')
+			
 	(opts,args) = parser.parse_args(argv)
 
 	searchItems = []
@@ -221,6 +247,21 @@ def main():
 			log.debug('scope item: %s' % s)
 
 	###################################################
+	# build up a list of TLDs to consider valid
+	###################################################
+	
+	tlds = []
+	if opts.useIanaTlds:
+		tlds += IANA_TLD_LIST
+	for tld in opts.addTlds:
+		tlds.append( tld )
+	log.debug('TLD list:')
+	for tld in tlds:
+		log.debug('    %s' % tld)
+	log.debug('END TLD list')
+	tlds = set(tlds)
+
+	###################################################
 	# build up a list of paths of plain files to extract possible names from
 	###################################################
 
@@ -238,7 +279,7 @@ def main():
 	allNames = set()
 	for searchFile in searchFiles:
 		log.debug('*** extracting names from %s' % searchFile)
-		names = extractNamesFromPath(searchFile)
+		names = extractNamesFromPath(searchFile, tlds)
 		for name in names:
 			log.debug('    %s found in %s' % (name, searchFile))
 		allNames = allNames.union(names)
