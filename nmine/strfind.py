@@ -43,7 +43,6 @@ class StringFinder:
 		"""return substrings in s that are could possibly be DNS names"""
 	
 		names = set()
-		(notdns, maybedns, rest) = self.divideString(s)
 		while True:
 			(notdns, maybedns, rest) = self.divideString(s)
 			
@@ -64,6 +63,8 @@ class StringFinder:
 		names = self.searchString(s)
 		namesConfirmed = set()
 		for name in names:
+			if name.endswith('.'):
+				name=name[:-1]
 			parts = name.split('.')
 			#ntld = name.split('.')[-1]
 			#print 'ntld',ntld
