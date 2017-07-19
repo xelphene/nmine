@@ -9,10 +9,10 @@ from output import writeOutputZone
 from output import writeOutputHosts
 from ianatlds import IANA_TLD_LIST
 
-def extractNamesFromPath(path, tlds):
+def extractNamesFromPath(path, tlds, onlySuffixes=None):
 	'''given a path to a file, extract all possible DNS names from it.'''
 	f = open(path)
-	sf=  StringFinder(tlds=tlds)
+	sf=  StringFinder(tlds=tlds, onlySuffixes=onlySuffixes)
 	names = set()
 	for line in f:
 		for name in sf.searchStringConfirmed(line):
@@ -50,12 +50,18 @@ def parseArgs(argv=sys.argv):
 		dest='addTlds',
 		default=[],
 		type='str',
-		help='Specify additional TLDs to consider valid. May be specified multiple times')
+		help='Specify additional TLDs to consider valid. May be specified multiple times.')
 	parser.add_option('-T', '--noianatlds',
 		action='store_false',
 		dest='useIanaTlds',
 		default=True,
 		help='Do NOT automatically consider IANA TLDs valid. The only TLDs considered valid will be those specified with -t.')
+	parser.add_option('-s','--onlysuffix',
+		action='append',
+		dest='onlySuffixes',
+		default=[],
+		type='str',
+		help='Only consider names with this ending to be valid names at all. May be specified multiple times.')
 			
 	(opts,args) = parser.parse_args(argv)
 
@@ -262,6 +268,17 @@ def main():
 	tlds = set(tlds)
 
 	###################################################
+	# build up a list of general suffixes to consider valid
+	###################################################
+	
+	onlySuffixes=None
+	if len(opts.onlySuffixes)>0:
+		onlySuffixes = opts.onlySuffixes
+		log.debug('onlySuffixes enabled: %s' % ', '.join(onlySuffixes))
+	else:
+		log.debug('onlySuffixes disabled. Any name ending with a known TLD considered valid.')
+
+	###################################################
 	# build up a list of paths of plain files to extract possible names from
 	###################################################
 
@@ -279,7 +296,7 @@ def main():
 	allNames = set()
 	for searchFile in searchFiles:
 		log.debug('*** extracting names from %s' % searchFile)
-		names = extractNamesFromPath(searchFile, tlds)
+		names = extractNamesFromPath(searchFile, tlds, onlySuffixes)
 		for name in names:
 			log.debug('    %s found in %s' % (name, searchFile))
 		allNames = allNames.union(names)

@@ -4,6 +4,11 @@ nmine searches files for substrings that appear to be valid DNS names. It
 resolves them and outputs the result if the address it resolves to is of
 interest.
 
+A possible name will only be considered a valid DNS name if it ends with a
+known TLD (see the -t and -T options).  If the -s option is also specified,
+then a possible name must also end with one of the strings specified with
+that option.
+
 # Examples / Description
 
 Let's say you have some arbitrary file (or directories of files) containing
@@ -52,6 +57,9 @@ multiple times.
 
 * -T: Do NOT automatically consider IANA TLDs valid. The only TLDs
 considered valid will be those specified with -t.
+
+* -s: Only consider names with this ending to be valid names at all. May be
+specified multiple times.
 
 # Copyright and License
 

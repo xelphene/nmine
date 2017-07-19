@@ -9,13 +9,14 @@ class StringFinder:
 	re_dns = re.compile('([a-zA-Z0-9]{1}[-.a-zA-Z0-9]+)')
 	re_windowend = re.compile('.*?([-.a-zA-Z0-9]+)$')
 
-	def __init__(self, tlds=None):
+	def __init__(self, tlds=None, onlySuffixes=None):
+		self.onlySuffixes=onlySuffixes
 		if tlds!=None:
 			self.tlds = tlds
 		else:
 			self.tlds = set(IANA_TLD_LIST)
 		
-		self.log = logging.getLogger('hptk.parse.dns')
+		self.log = logging.getLogger('nmine.strfind')
 
 	# called from searchString
 	def divideString(self, s): 
@@ -65,16 +66,21 @@ class StringFinder:
 		for name in names:
 			if name.endswith('.'):
 				name=name[:-1]
+			
+			name = name.lower()
+			
 			parts = name.split('.')
-			#ntld = name.split('.')[-1]
-			#print 'ntld',ntld
-			#if len(parts)>1 and parts[-1] in self.provider_tldList():
-			if len(parts)>1 and parts[-1] in self.tlds:
-				#print ' YES'
+			if len(parts)>1 and parts[-1] in self.tlds and self.nameMatchesOnlySuffixes(name):
 				namesConfirmed.add(name)
-			#for ending in self.endings():
-			#	if name.lower().endswith(ending):
-			#		namesConfirmed.add(name)
 
 		return namesConfirmed
 
+	def nameMatchesOnlySuffixes(self, name):
+		if self.onlySuffixes==None:
+			return True
+		else:
+			for suffix in self.onlySuffixes:
+				if name.endswith(suffix.lower()):
+					return True
+			return False
+						
