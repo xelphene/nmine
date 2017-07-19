@@ -150,6 +150,7 @@ def buildSearchFiles(searchPaths, doDotFiles=False):
 		else:
 			if os.path.isfile(searchPath):
 				log.debug('will search file %s' % searchPath)
+				searchFiles.append(searchPath)
 			elif os.path.isdir(searchPath):
 				log.debug('recursively searching directory %s for files to search' % searchPath)
 				for (dirpath, dirnames, filenames) in os.walk(searchPath, topdown=True):
