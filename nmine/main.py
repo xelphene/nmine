@@ -116,16 +116,23 @@ def loadScope(scopePath):
 
 	import iptree
 
-	lineNum=1
+	lineNum=0
 	for line in open(scopePath):
+		lineNum+=1
+		
+		parts = line.split('#')
+		line = parts[0]
 		line = line.strip()
+		
+		if line=='':
+			continue
+		
 		try:
 			p = iptree.Prefix(line)
 		except ValueError, ve:
 			raise ScopeParseError(scopePath, lineNum, str(ve))
 		else:
 			scope.append(p)
-		lineNum+=1
 	
 	return scope
 
