@@ -1,6 +1,6 @@
 
 import re
-from ianatlds import IANA_TLD_LIST
+from .ianatlds import IANA_TLD_LIST
 
 class StreamFinder:
 	
@@ -16,14 +16,14 @@ class StreamFinder:
 		self.extraTLDprovider = lambda: set()
 
 	def updateTLDs(self):
-		print 'NEW TLDs'
+		print('NEW TLDs')
 		pass
 
 	@classmethod
 	def tokenizeString(cls, s):
 		sf = cls()
 		sf.feed(s)
-		print 'wsr:',cls.searchWindow(s)
+		print('wsr:',cls.searchWindow(s))
 		#return s
 
 		"""exhaustively check self._buf until there's no hope for finding
@@ -35,7 +35,7 @@ class StreamFinder:
 		while True:
 			#print 'buffer check round:',repr(self._buf)
 			(name, newbuf) = cls.searchWindow(self._buf)
-			print 'got name=%s newbuf=%s' % (repr(name),repr(newbuf))
+			print('got name=%s newbuf=%s' % (repr(name),repr(newbuf)))
 			if name!=None:
 				#yield name
 				rv += {'type':'dns', 'value':name}

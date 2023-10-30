@@ -2,7 +2,7 @@
 import re
 import logging
 
-from ianatlds import IANA_TLD_LIST
+from .ianatlds import IANA_TLD_LIST
 
 class StringFinder:
 

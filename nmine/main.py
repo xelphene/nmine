@@ -4,14 +4,14 @@ import os
 import optparse
 import logging
 
-from strfind import StringFinder
-from output import writeOutputZone
-from output import writeOutputHosts
-from ianatlds import IANA_TLD_LIST
+from .strfind import StringFinder
+from .output import writeOutputZone
+from .output import writeOutputHosts
+from .ianatlds import IANA_TLD_LIST
 
 def extractNamesFromPath(path, tlds, onlySuffixes=None):
 	'''given a path to a file, extract all possible DNS names from it.'''
-	f = open(path)
+	f = open(path, errors='ignore')
 	sf=  StringFinder(tlds=tlds, onlySuffixes=onlySuffixes)
 	names = set()
 	for line in f:
@@ -129,7 +129,7 @@ def loadScope(scopePath):
 		
 		try:
 			p = iptree.Prefix(line)
-		except ValueError, ve:
+		except ValueError as ve:
 			raise ScopeParseError(scopePath, lineNum, str(ve))
 		else:
 			scope.append(p)
@@ -165,7 +165,7 @@ def buildSearchFiles(searchPaths, doDotFiles=False):
 						for dirname in dirnames:
 							if dirname.startswith('.'):
 								del dirnames[dirnames.index(dirname)]
-						filenames = filter(lambda f: not f.startswith('.'), filenames)
+						filenames = [f for f in filenames if not f.startswith('.')]
 					for filename in filenames:		
 						sf = os.path.join(dirpath, filename)
 						log.debug('will search file %s' % sf)
@@ -212,7 +212,7 @@ def resolveNames(names, scope, nameserver=None):
 					log.debug('    %s in %s ?' % (prefix, scopeEntry))
 					if prefix in scopeEntry or prefix==scopeEntry:
 						log.debug('        HIT: %s' % rdata.address)
-						if results.has_key(name):
+						if name in results:
 							results[name].append(rdata.address)
 						else:
 							results[name] = [rdata.address]
@@ -249,10 +249,10 @@ def main():
 
 	try:
 		scope = loadScope(scopePath)
-	except IOError, ioe:
+	except IOError as ioe:
 		log.error('Error loading scope file %s: %s. Try the -i <path> command line option.' % (ioe.filename, str(ioe)))
 		raise SystemExit(1)
-	except ScopeParseError, spe:
+	except ScopeParseError as spe:
 		log.error(spe)
 		raise SystemExit(1)
 	
@@ -293,7 +293,7 @@ def main():
 	log.debug('search paths: %s' % repr(searchPaths))
 	try:
 		searchFiles = buildSearchFiles(searchPaths)
-	except BadSearchPath, bsp:
+	except BadSearchPath as bsp:
 		log.error(bsp)
 		raise SystemExit(1)
 	
