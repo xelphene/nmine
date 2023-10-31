@@ -114,7 +114,7 @@ def loadScope(scopePath):
 
 	log.debug('loading scope %s' % scopePath)
 
-	import iptree
+	import ipcidrtree
 
 	lineNum=0
 	for line in open(scopePath):
@@ -128,7 +128,7 @@ def loadScope(scopePath):
 			continue
 		
 		try:
-			p = iptree.Prefix(line)
+			p = ipcidrtree.Prefix(line)
 		except ValueError as ve:
 			raise ScopeParseError(scopePath, lineNum, str(ve))
 		else:
@@ -176,7 +176,7 @@ def buildSearchFiles(searchPaths, doDotFiles=False):
 
 def resolveNames(names, scope, nameserver=None):
 	import dns.resolver
-	import iptree
+	import ipcidrtree
 	log = logging.getLogger('nmine')
 	
 	results = {}
@@ -207,7 +207,7 @@ def resolveNames(names, scope, nameserver=None):
 		else:
 			for rdata in answer:
 				log.debug('resolved %s to %s' % (name, rdata.address))
-				prefix = iptree.Prefix(rdata.address)
+				prefix = ipcidrtree.Prefix(rdata.address)
 				for scopeEntry in scope:
 					log.debug('    %s in %s ?' % (prefix, scopeEntry))
 					if prefix in scopeEntry or prefix==scopeEntry:
@@ -232,9 +232,9 @@ def main():
 	###################################################
 
 	try:
-		import iptree
+		import ipcidrtree
 	except ImportError:
-		log.error("You don't seem to have the iptree Python module installed. See https://github.com/xelphene/iptree.")
+		log.error("You don't seem to have the ipcidrtree Python module installed. See https://github.com/xelphene/ipcidrtree.")
 		raise SystemExit(1)
 
 	try:
