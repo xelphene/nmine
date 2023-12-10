@@ -11,7 +11,12 @@ from .ianatlds import IANA_TLD_LIST
 
 def extractNamesFromPath(path, tlds, onlySuffixes=None):
 	'''given a path to a file, extract all possible DNS names from it.'''
-	f = open(path, errors='ignore')
+	log = logging.getLogger('nmine')
+	try:
+		f = open(path, errors='ignore')
+	except FileNotFoundError as fnfe:
+		log.error(fnfe)
+		return set()
 	sf=  StringFinder(tlds=tlds, onlySuffixes=onlySuffixes)
 	names = set()
 	for line in f:
