@@ -208,6 +208,8 @@ def resolveNames(names, scope, nameserver=None):
 			pass
 		except dns.name.LabelTooLong:
 			pass
+		except dns.name.NameTooLong:
+			pass
 		except dns.name.EmptyLabel:
 			# raised if ".." is in a name. parser shouldn't even return that. TODO
 			pass
