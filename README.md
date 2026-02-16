@@ -63,9 +63,7 @@ specified multiple times.
 
 # Copyright and License
 
-Copyright (C) 2016 Hurricane Labs
-
-nmine was written by Steve Benson for Hurricane Labs.
+Copyright (C) 2026 Steve Benson
 
 nmine is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free
