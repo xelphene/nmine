@@ -67,6 +67,12 @@ def parseArgs(argv=sys.argv):
 		default=[],
 		type='str',
 		help='Only consider names with this ending to be valid names at all. May be specified multiple times.')
+	parser.add_option('-z','--ignorepath',
+		action='append',
+		dest='ignorePaths',
+		default=[],
+		type='str',
+		help='Ignore any file path starting with this string. May be specified multiple times.')
 			
 	(opts,args) = parser.parse_args(argv)
 
@@ -153,7 +159,13 @@ class InvalidSearchPath(BadSearchPath):
 	def __str__(self):
 		return 'search path %s is neither a file nor a directory.' % repr(self.searchPath)
 
-def buildSearchFiles(searchPaths, doDotFiles=False):
+def ignoreSearchFile(searchFile, ignorePaths):
+	for ip in ignorePaths:
+		if searchFile.startswith(ip):
+			return True
+	return False
+
+def buildSearchFiles(searchPaths, ignorePaths=[], doDotFiles=False):
 	log = logging.getLogger('nmine')
 	searchFiles = []
 	for searchPath in searchPaths:
@@ -171,10 +183,13 @@ def buildSearchFiles(searchPaths, doDotFiles=False):
 							if dirname.startswith('.'):
 								del dirnames[dirnames.index(dirname)]
 						filenames = [f for f in filenames if not f.startswith('.')]
-					for filename in filenames:		
+					for filename in filenames:	
 						sf = os.path.join(dirpath, filename)
-						log.debug('will search file %s' % sf)
-						searchFiles.append(sf)
+						if ignoreSearchFile(sf, ignorePaths):
+							log.debug('will ignore file %s' % sf)
+						else:
+							log.debug('will search file %s' % sf)
+							searchFiles.append(sf)
 			else:
 				raise InvalidSearchPath(searchPath)
 	return searchFiles
@@ -298,10 +313,11 @@ def main():
 	###################################################
 	# build up a list of paths of plain files to extract possible names from
 	###################################################
-
+	
+	log.debug('ignore paths: %s' % repr(opts.ignorePaths))
 	log.debug('search paths: %s' % repr(searchPaths))
 	try:
-		searchFiles = buildSearchFiles(searchPaths)
+		searchFiles = buildSearchFiles(searchPaths, opts.ignorePaths)
 	except BadSearchPath as bsp:
 		log.error(bsp)
 		raise SystemExit(1)

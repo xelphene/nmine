@@ -61,6 +61,9 @@ considered valid will be those specified with -t.
 * -s: Only consider names with this ending to be valid names at all. May be
 specified multiple times.
 
+* -z (string): Ignore file paths starting with this string. May be
+specified multiple times.
+
 # Copyright and License
 
 Copyright (C) 2026 Steve Benson
